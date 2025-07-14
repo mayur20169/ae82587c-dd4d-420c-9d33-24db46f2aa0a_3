@@ -27,6 +27,18 @@ interface Opportunity {
   posted: string;
 }
 
+const typeFilters: Opportunity['type'][] = [
+  'PhD',
+  'JRF',
+  'SRF',
+  'Predoc',
+  'Professorship',
+  'Internship',
+  'Postdoc',
+  'Research Fellow',
+  'Teaching Assistant'
+];
+
 const mockOpportunities: Opportunity[] = [
   {
     id: '1',
@@ -240,12 +252,13 @@ export default function OpportunitiesPage() {
   };
 
   const handleTypeFilter = (type: Opportunity['type']) => {
-    if (selectedTypes.includes(type)) {
-      setSelectedTypes(selectedTypes.filter(t => t !== type));
-    } else {
-      setSelectedTypes([...selectedTypes, type]);
-    }
-    handleSearch();
+    const updatedTypes = selectedTypes.includes(type)
+      ? selectedTypes.filter(t => t !== type)
+      : [...selectedTypes, type];
+    setSelectedTypes(updatedTypes);
+
+    // Filter immediately after updating
+    setTimeout(() => handleSearch(), 0);
   };
 
   const clearFilters = () => {
@@ -262,7 +275,7 @@ export default function OpportunitiesPage() {
       <Header />
 
       <div className="flex-1 bg-gradient-to-br from-blue-50 to-indigo-100">
-        {/* Hero Section */}
+        {/* Hero and Search Section */}
         <div className="bg-white border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-6 py-12">
             <div className="text-center mb-8">
@@ -272,7 +285,7 @@ export default function OpportunitiesPage() {
               </p>
             </div>
 
-            {/* Search Bar */}
+            {/* Search Input */}
             <div className="max-w-4xl mx-auto">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
@@ -294,7 +307,7 @@ export default function OpportunitiesPage() {
                 </button>
               </div>
 
-              {/* Quick Filters */}
+              {/* Quick Type Filters */}
               <div className="mt-6 flex flex-wrap gap-3">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
@@ -305,101 +318,87 @@ export default function OpportunitiesPage() {
                   <i className={`ri-arrow-${showFilters ? 'up' : 'down'}-s-line`}></i>
                 </button>
 
-              const typeFilters: Opportunity['type'][] = [
-                'PhD',
-                'JRF',
-                'SRF',
-                'Predoc',
-                'Professorship',
-                'Internship'
-              ];
-
-              {typeFilters.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => handleTypeFilter(type)}
-                  className={`px-4 py-2 rounded-lg transition-colors cursor-pointer ${
-                    selectedTypes.includes(type)
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                  }`}
-                >
-                  {type}
-                </button>
-              ))}
+                {typeFilters.map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => handleTypeFilter(type)}
+                    className={`px-4 py-2 rounded-lg transition-colors cursor-pointer ${
+                      selectedTypes.includes(type)
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
               </div>
 
-              {/* Advanced Filters */}
+              {/* Advanced Filter Section */}
               {showFilters && (
                 <div className="mt-6 p-6 bg-white rounded-xl border border-gray-200">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Field Filter */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Field</label>
-                      <div className="relative">
-                        <select
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none pr-8"
-                          value={selectedField}
-                          onChange={(e) => setSelectedField(e.target.value)}
-                        >
-                          <option value="">All Fields</option>
-                          <option value="Computer Science">Computer Science</option>
-                          <option value="Biology">Biology</option>
-                          <option value="Engineering">Engineering</option>
-                          <option value="Physics">Physics</option>
-                          <option value="Mathematics">Mathematics</option>
-                          <option value="Chemistry">Chemistry</option>
-                        </select>
-                        <i className="ri-arrow-down-s-line absolute right-2 top-3 text-gray-400 pointer-events-none"></i>
-                      </div>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                        value={selectedField}
+                        onChange={(e) => setSelectedField(e.target.value)}
+                      >
+                        <option value="">All Fields</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Chemistry">Chemistry</option>
+                      </select>
                     </div>
 
+                    {/* Location Filter */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                      <div className="relative">
-                        <select
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none pr-8"
-                          value={selectedLocation}
-                          onChange={(e) => setSelectedLocation(e.target.value)}
-                        >
-                          <option value="">All Locations</option>
-                          <option value="CA">California</option>
-                          <option value="MA">Massachusetts</option>
-                          <option value="CT">Connecticut</option>
-                          <option value="NY">New York</option>
-                        </select>
-                        <i className="ri-arrow-down-s-line absolute right-2 top-3 text-gray-400 pointer-events-none"></i>
-                      </div>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                        value={selectedLocation}
+                        onChange={(e) => setSelectedLocation(e.target.value)}
+                      >
+                        <option value="">All Locations</option>
+                        <option value="CA">California</option>
+                        <option value="MA">Massachusetts</option>
+                        <option value="CT">Connecticut</option>
+                        <option value="NY">New York</option>
+                      </select>
                     </div>
 
+                    {/* Funding Source Filter */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Funding Source</label>
-                      <div className="relative">
-                        <select
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none pr-8"
-                          value={selectedFunding}
-                          onChange={(e) => setSelectedFunding(e.target.value)}
-                        >
-                          <option value="">All Funding</option>
-                          <option value="NSF">NSF</option>
-                          <option value="NIH">NIH</option>
-                          <option value="DOE">DOE</option>
-                          <option value="Department">Department</option>
-                        </select>
-                        <i className="ri-arrow-down-s-line absolute right-2 top-3 text-gray-400 pointer-events-none"></i>
-                      </div>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                        value={selectedFunding}
+                        onChange={(e) => setSelectedFunding(e.target.value)}
+                      >
+                        <option value="">All Funding</option>
+                        <option value="NSF">NSF</option>
+                        <option value="NIH">NIH</option>
+                        <option value="DOE">DOE</option>
+                        <option value="Department">Department</option>
+                      </select>
                     </div>
                   </div>
 
+                  {/* Filter Buttons */}
                   <div className="mt-4 flex justify-between">
                     <button
                       onClick={clearFilters}
-                      className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors cursor-pointer"
+                      className="px-4 py-2 text-gray-600 hover:text-gray-800"
                     >
                       Clear All Filters
                     </button>
                     <button
                       onClick={handleSearch}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold whitespace-nowrap cursor-pointer"
+                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
                     >
                       Apply Filters
                     </button>
@@ -607,6 +606,217 @@ export default function OpportunitiesPage() {
             </div>
           )}
         </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}
+
+
+
+
+export default function OpportunitiesPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTypes, setSelectedTypes] = useState<Opportunity['type'][]>([]);
+  const [selectedField, setSelectedField] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [selectedFunding, setSelectedFunding] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [filteredOpportunities, setFilteredOpportunities] = useState(mockOpportunities);
+
+  const handleSearch = () => {
+    let filtered = mockOpportunities;
+
+    if (searchTerm) {
+      filtered = filtered.filter(opp =>
+        opp.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        opp.professor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        opp.institution.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        opp.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        opp.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+
+    if (selectedTypes.length > 0) {
+      filtered = filtered.filter(opp => selectedTypes.includes(opp.type));
+    }
+
+    if (selectedField) {
+      filtered = filtered.filter(opp => opp.field === selectedField);
+    }
+
+    if (selectedLocation) {
+      filtered = filtered.filter(opp => opp.location.includes(selectedLocation));
+    }
+
+    if (selectedFunding) {
+      filtered = filtered.filter(opp => opp.fundingSource.includes(selectedFunding));
+    }
+
+    setFilteredOpportunities(filtered);
+  };
+
+  const handleTypeFilter = (type: Opportunity['type']) => {
+    const updatedTypes = selectedTypes.includes(type)
+      ? selectedTypes.filter(t => t !== type)
+      : [...selectedTypes, type];
+    setSelectedTypes(updatedTypes);
+
+    // Filter immediately after updating
+    setTimeout(() => handleSearch(), 0);
+  };
+
+  const clearFilters = () => {
+    setSearchTerm('');
+    setSelectedTypes([]);
+    setSelectedField('');
+    setSelectedLocation('');
+    setSelectedFunding('');
+    setFilteredOpportunities(mockOpportunities);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+
+      <div className="flex-1 bg-gradient-to-br from-blue-50 to-indigo-100">
+        {/* Hero and Search Section */}
+        <div className="bg-white border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">Find Your Perfect Academic Opportunity</h1>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Discover PhD positions, research fellowships, internships, and teaching opportunities from top institutions worldwide
+              </p>
+            </div>
+
+            {/* Search Input */}
+            <div className="max-w-4xl mx-auto">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <i className="ri-search-line absolute left-4 top-4 text-gray-400 text-xl"></i>
+                  <input
+                    type="text"
+                    placeholder="Search by keywords, professor, institution, or field..."
+                    className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  onClick={handleSearch}
+                  className="px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold text-lg whitespace-nowrap cursor-pointer"
+                >
+                  Search Opportunities
+                </button>
+              </div>
+
+              {/* Quick Type Filters */}
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2 cursor-pointer"
+                >
+                  <i className="ri-filter-line"></i>
+                  <span>Filters</span>
+                  <i className={`ri-arrow-${showFilters ? 'up' : 'down'}-s-line`}></i>
+                </button>
+
+                {typeFilters.map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => handleTypeFilter(type)}
+                    className={`px-4 py-2 rounded-lg transition-colors cursor-pointer ${
+                      selectedTypes.includes(type)
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+
+              {/* Advanced Filter Section */}
+              {showFilters && (
+                <div className="mt-6 p-6 bg-white rounded-xl border border-gray-200">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Field Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Field</label>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                        value={selectedField}
+                        onChange={(e) => setSelectedField(e.target.value)}
+                      >
+                        <option value="">All Fields</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Chemistry">Chemistry</option>
+                      </select>
+                    </div>
+
+                    {/* Location Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                        value={selectedLocation}
+                        onChange={(e) => setSelectedLocation(e.target.value)}
+                      >
+                        <option value="">All Locations</option>
+                        <option value="CA">California</option>
+                        <option value="MA">Massachusetts</option>
+                        <option value="CT">Connecticut</option>
+                        <option value="NY">New York</option>
+                      </select>
+                    </div>
+
+                    {/* Funding Source Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Funding Source</label>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                        value={selectedFunding}
+                        onChange={(e) => setSelectedFunding(e.target.value)}
+                      >
+                        <option value="">All Funding</option>
+                        <option value="NSF">NSF</option>
+                        <option value="NIH">NIH</option>
+                        <option value="DOE">DOE</option>
+                        <option value="Department">Department</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Filter Buttons */}
+                  <div className="mt-4 flex justify-between">
+                    <button
+                      onClick={clearFilters}
+                      className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                    >
+                      Clear All Filters
+                    </button>
+                    <button
+                      onClick={handleSearch}
+                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
+                    >
+                      Apply Filters
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Your results display and cards remain unchanged */}
+        {/* Continue rendering your cards below... */}
       </div>
 
       <Footer />
