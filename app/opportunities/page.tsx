@@ -239,7 +239,7 @@ export default function OpportunitiesPage() {
     setFilteredOpportunities(filtered);
   };
 
-  const handleTypeFilter = (type) => {
+  const handleTypeFilter = (type: Opportunity['type']) => {
     if (selectedTypes.includes(type)) {
       setSelectedTypes(selectedTypes.filter(t => t !== type));
     } else {
