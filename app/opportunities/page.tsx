@@ -1,4 +1,3 @@
-
 'use client';
 
 import Header from '@/components/Header';
@@ -201,7 +200,7 @@ const mockOpportunities: Opportunity[] = [
 
 export default function OpportunitiesPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTypes, setSelectedTypes] = useState([]);
+  const [selectedTypes, setSelectedTypes] = useState<Opportunity['type'][]>([]);
   const [selectedField, setSelectedField] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedFunding, setSelectedFunding] = useState('');
