@@ -305,19 +305,28 @@ export default function OpportunitiesPage() {
                   <i className={`ri-arrow-${showFilters ? 'up' : 'down'}-s-line`}></i>
                 </button>
 
-                {[ 'PhD', 'JRF', 'SRF', 'Predoc', 'Professorship', 'Internship' ].map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => handleTypeFilter(type)}
-                    className={`px-4 py-2 rounded-lg transition-colors cursor-pointer ${
-                      selectedTypes.includes(type)
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                    }`}
-                  >
-                    {type}
-                  </button>
-                ))}
+              const typeFilters: Opportunity['type'][] = [
+                'PhD',
+                'JRF',
+                'SRF',
+                'Predoc',
+                'Professorship',
+                'Internship'
+              ];
+
+              {typeFilters.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => handleTypeFilter(type)}
+                  className={`px-4 py-2 rounded-lg transition-colors cursor-pointer ${
+                    selectedTypes.includes(type)
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
               </div>
 
               {/* Advanced Filters */}
